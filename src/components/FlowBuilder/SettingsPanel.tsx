@@ -1,15 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Box, TextField, Typography, Paper, IconButton } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Box, Typography, TextField, styled, IconButton } from '@mui/material';
 import { Node, useReactFlow } from 'reactflow';
-import { styled } from '@mui/material/styles';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-type TextMessageNodeData = {
-  label: string;
-  // Add other node data properties as needed
-};
-
-type TextMessageNode = Node<TextMessageNodeData>;
+// Define the TextMessageNode type
+type TextMessageNode = Node<{ label: string }>;
 
 const PanelContainer = styled(Box)({
   width: '320px',
@@ -165,7 +160,7 @@ const StyledTextField = styled(TextField)({
 interface SettingsPanelProps {
   selectedNode: TextMessageNode | null;
   onBack: () => void;
-  setNodes: (nodes: any[]) => void;
+  setNodes: (nodes: Node[]) => void;
 }
 
 export const SettingsPanel: React.FC<SettingsPanelProps> = ({ selectedNode, onBack }) => {
@@ -182,10 +177,9 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ selectedNode, onBa
     const newMessage = event.target.value;
     setMessage(newMessage);
 
-    // Update the node's data
     if (selectedNode) {
       setNodes(
-        getNodes().map((node) => {
+        getNodes().map((node: Node) => {
           if (node.id === selectedNode.id) {
             return {
               ...node,
@@ -193,7 +187,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ selectedNode, onBa
                 ...node.data,
                 label: newMessage,
               },
-            };
+            } as Node;
           }
           return node;
         })

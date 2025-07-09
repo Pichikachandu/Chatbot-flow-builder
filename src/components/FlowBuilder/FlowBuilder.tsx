@@ -1,26 +1,22 @@
-import { useCallback, useState, useRef, ReactNode } from 'react';
+import { useCallback, useState, useRef } from 'react';
 import { Box, Typography, Button, styled } from '@mui/material';
-import { BezierEdge, SmoothStepEdge, StepEdge, StraightEdge, Node as FlowNode } from 'reactflow';
+import { BezierEdge, SmoothStepEdge, StepEdge, StraightEdge } from 'reactflow';
 import ReactFlow, {
+  addEdge,
   Background,
   BackgroundVariant,
-  Controls,
-  Node,
-  Edge,
-  NodeTypes as FlowNodeTypes,
-  useNodesState,
-  useEdgesState,
-  addEdge,
   Connection,
-  ReactFlowInstance,
-  MarkerType,
-  ConnectionLineType,
-  useReactFlow,
-  NodeChange,
+  Controls,
+  Edge,
   EdgeChange,
-  OnConnect,
-  OnNodesChange,
-  OnEdgesChange,
+  MarkerType,
+  Node,
+  NodeChange,
+  NodeTypes,
+  ReactFlowInstance,
+  useEdgesState,
+  useNodesState,
+  useReactFlow
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import NodesPanel from './NodesPanel';
@@ -29,7 +25,7 @@ import TextMessageNode from './Nodes/TextMessageNode';
 import { Notification, useNotification } from '../common/Notification';
 
 // Define node and edge types
-const nodeTypes: FlowNodeTypes = {
+const nodeTypes: NodeTypes = {
   textMessage: TextMessageNode,
 };
 
@@ -260,47 +256,24 @@ const SaveButton = styled(Button)(({ theme }) => ({
 const FlowBuilder: React.FC = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const [selectedNode, setSelectedNode] = useState<FlowNode | null>(null);
+  const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
   const { showNotification } = useNotification();
   
-  // Type the node and edge change handlers
-  const onNodesChangeHandler: OnNodesChange = useCallback(
-    (changes: NodeChange[]) => onNodesChange(changes),
-    [onNodesChange]
-  );
-
-  const onEdgesChangeHandler: OnEdgesChange = useCallback(
-    (changes: EdgeChange[]) => onEdgesChange(changes),
-    [onEdgesChange]
-  );
-
-  const onConnectHandler: OnConnect = useCallback(
-    (connection: Connection) => {
-      setEdges((eds) => addEdge(connection, eds));
-    },
-    [setEdges]
-  );
-
-  // Custom edge options
+  // Edge options for the React Flow instance
   const edgeOptions = {
     type: 'smoothstep',
-    style: {
-      stroke: '#94A3B8',
-      strokeWidth: 2,
-      transition: 'stroke 0.2s ease',
-    },
-    markerEnd: {
-      type: MarkerType.ArrowClosed,
-      color: '#94A3B8',
-      width: 12,
-      height: 12,
-    },
-    animated: false,
+    style: { stroke: '#4b5563', strokeWidth: 2 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#4b5563', width: 14, height: 14 },
+    animated: true,
   };
 
-  // Node and edge change handlers are now provided by useNodesState and useEdgesState
+  // Initialize the React Flow instance
+  const onInit = useCallback((instance: any) => {
+    setReactFlowInstance(instance);
+    instance.fitView({ padding: 0.2 });
+  }, []);
 
   // Handle connection between nodes
   const onConnect = useCallback((connection: Connection) => {
@@ -315,11 +288,6 @@ const FlowBuilder: React.FC = () => {
   // Handle pane click to deselect nodes
   const onPaneClick = useCallback(() => {
     setSelectedNode(null);
-  }, []);
-
-  // Handle initialization of ReactFlow instance
-  const onInit = useCallback((instance: ReactFlowInstance) => {
-    setReactFlowInstance(instance);
   }, []);
 
   // Handle drag over event
