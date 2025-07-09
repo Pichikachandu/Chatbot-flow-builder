@@ -29,9 +29,6 @@ const getNotificationColor = (type: NotificationType) => {
 const NotificationContainer = styled(Box, {
   shouldForwardProp: (prop) => prop !== 'type',
 })<NotificationContainerProps>(({ theme, type }) => ({
-  position: 'fixed',
-  top: '20px',
-  right: '20px',
   backgroundColor: getNotificationColor(type),
   color: '#FFFFFF',
   padding: '12px 20px',
@@ -40,7 +37,6 @@ const NotificationContainer = styled(Box, {
   alignItems: 'flex-start',
   gap: '12px',
   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-  zIndex: 1400,
   minWidth: '320px',
   maxWidth: '400px',
   animation: 'slideIn 0.3s ease-out',
@@ -58,8 +54,8 @@ const NotificationContainer = styled(Box, {
     wordBreak: 'break-word',
   },
   '@keyframes slideIn': {
-    from: { transform: 'translateX(100%)', opacity: 0 },
-    to: { transform: 'translateX(0)', opacity: 1 },
+    'from': { transform: 'translateY(-100%)', opacity: 0 },
+    'to': { transform: 'translateY(0)', opacity: 1 },
   },
 }));
 
@@ -93,22 +89,32 @@ export const Notification: React.FC<NotificationProps> = ({ message, type = 'inf
   };
 
   return (
-    <Slide direction="left" in={true} mountOnEnter unmountOnExit>
-      <NotificationContainer type={type}>
-        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: '12px', width: '100%' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {renderIcon()}
-          </Box>
-          <Box sx={{ flex: 1, minWidth: 0 }}>
+    <Box sx={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      display: 'flex',
+      justifyContent: 'center',
+      zIndex: 1400,
+      pointerEvents: 'none',
+      paddingTop: '20px',
+    }}>
+      <Slide direction="down" in={true} mountOnEnter unmountOnExit>
+        <NotificationContainer type={type}>
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: '12px', width: '100%' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              {renderIcon()}
+            </Box>
             {typeof message === 'string' ? (
               <Typography variant="body1" sx={{ color: 'white' }}>{message}</Typography>
             ) : (
               message
             )}
           </Box>
-        </Box>
-      </NotificationContainer>
-    </Slide>
+        </NotificationContainer>
+      </Slide>
+    </Box>
   );
 };
 

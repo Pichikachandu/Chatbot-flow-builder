@@ -14,18 +14,13 @@ import ReactFlow, {
   Connection,
   ReactFlowInstance,
   MarkerType,
-  useReactFlow,
-  NodeChange,
-  EdgeChange,
   OnConnect,
-  OnNodesChange,
-  OnEdgesChange,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import NodesPanel from './NodesPanel';
 import { SettingsPanel } from './SettingsPanel';
 import TextMessageNode from './Nodes/TextMessageNode';
-import { Notification, useNotification } from '../common/Notification';
+import { useNotification } from '../common/Notification';
 
 // Define node and edge types
 const nodeTypes: FlowNodeTypes = {
@@ -263,31 +258,9 @@ const FlowBuilder: React.FC = () => {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
   const { showNotification } = useNotification();
-  
-  // Type the node and edge change handlers
-  const onNodesChangeHandler: OnNodesChange = useCallback(
-    (changes: NodeChange[]) => onNodesChange(changes),
-    [onNodesChange]
-  );
-
-  const onEdgesChangeHandler: OnEdgesChange = useCallback(
-    (changes: EdgeChange[]) => onEdgesChange(changes),
-    [onEdgesChange]
-  );
-
-  const onConnectHandler: OnConnect = useCallback(
-    (connection: Connection) => {
-      setEdges((eds) => addEdge(connection, eds));
-    },
-    [setEdges]
-  );
-
-
-
-  // Node and edge change handlers are now provided by useNodesState and useEdgesState
 
   // Handle connection between nodes
-  const onConnect = useCallback((connection: Connection) => {
+  const onConnect: OnConnect = useCallback((connection: Connection) => {
     setEdges((eds) => addEdge(connection, eds));
   }, [setEdges]);
 

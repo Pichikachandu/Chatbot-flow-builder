@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, TextField, Typography, Paper, IconButton } from '@mui/material';
+import { Box, TextField, Typography, IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Node, useReactFlow } from 'reactflow';
 import { styled } from '@mui/material/styles';
