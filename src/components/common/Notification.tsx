@@ -28,7 +28,7 @@ const getNotificationColor = (type: NotificationType) => {
 
 const NotificationContainer = styled(Box, {
   shouldForwardProp: (prop) => prop !== 'type',
-})<NotificationContainerProps>(({ type, ...props }) => ({
+})<NotificationContainerProps>(({ type }) => ({
   backgroundColor: getNotificationColor(type),
   color: '#FFFFFF',
   padding: '12px 20px',
