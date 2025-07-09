@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, TextField, styled, IconButton } from '@mui/material';
-import { Node, useReactFlow } from 'reactflow';
+import { Box, TextField, Typography, Paper, IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Node, useReactFlow } from 'reactflow';
+import { styled } from '@mui/material/styles';
 
-// Define the TextMessageNode type
-type TextMessageNode = Node<{ label: string }>;
+type TextMessageNodeData = {
+  label: string;
+  // Add other node data properties as needed
+};
+
+type TextMessageNode = Node<TextMessageNodeData>;
 
 const PanelContainer = styled(Box)({
   width: '320px',
@@ -94,35 +99,6 @@ const NodeIdText = styled(Box)({
   },
 });
 
-const PanelHeader = styled(Box)({
-  display: 'flex',
-  alignItems: 'center',
-  marginBottom: '24px',
-  paddingBottom: '16px',
-  borderBottom: '1px solid #f1f5f9',
-  '& h2': {
-    fontSize: '18px',
-    fontWeight: 700,
-    margin: 0,
-    color: '#1e293b',
-    position: 'relative',
-    '&::after': {
-      content: '""',
-      position: 'absolute',
-      bottom: '-16px',
-      left: 0,
-      width: '40px',
-      height: '3px',
-      background: 'linear-gradient(90deg, #4F46E5 0%, #7C3AED 100%)',
-      borderRadius: '3px',
-    },
-  },
-  '& svg': {
-    marginRight: '10px',
-    color: '#4f46e5',
-    fontSize: '18px',
-  },
-});
 
 const StyledTextField = styled(TextField)({
   marginBottom: '20px',
@@ -160,7 +136,7 @@ const StyledTextField = styled(TextField)({
 interface SettingsPanelProps {
   selectedNode: TextMessageNode | null;
   onBack: () => void;
-  setNodes: (nodes: Node[]) => void;
+  setNodes: (nodes: any[]) => void;
 }
 
 export const SettingsPanel: React.FC<SettingsPanelProps> = ({ selectedNode, onBack }) => {
@@ -177,9 +153,10 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ selectedNode, onBa
     const newMessage = event.target.value;
     setMessage(newMessage);
 
+    // Update the node's data
     if (selectedNode) {
       setNodes(
-        getNodes().map((node: Node) => {
+        getNodes().map((node) => {
           if (node.id === selectedNode.id) {
             return {
               ...node,
@@ -187,7 +164,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ selectedNode, onBa
                 ...node.data,
                 label: newMessage,
               },
-            } as Node;
+            };
           }
           return node;
         })
